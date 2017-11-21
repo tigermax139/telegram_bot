@@ -1,0 +1,25 @@
+{
+  "name": "telegram_bot",
+  "version": "1.0.0",
+  "description": "\"developing bot for telegram messenger\"",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tigermax139/telegram_bot.git"
+  },
+  "author": "tigermax139",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tigermax139/telegram_bot/issues"
+  },
+  "homepage": "https://github.com/tigermax139/telegram_bot#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.29.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
+}
