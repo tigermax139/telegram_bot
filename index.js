@@ -12,6 +12,19 @@ const KB = {
     back: 'back'
 };
 
+const PicSrcs = {
+    [KB.cat]: [
+        'car.png',
+        'car1.png',
+        'car2.jpg'
+    ],
+    [KB.car]: [
+        'cat.png',
+        'cat1.jpg',
+        'cat2.jpg'
+    ]
+}
+
 bot.onText(/\/start/, msg => {
     sendGreeting(msg);
 });
@@ -28,6 +41,7 @@ bot.on('message', msg => {
             break;
         case KB.cat:
         case KB.car:
+            sendPictureByName(msg.chat.id, msg.text)
             break;
     }
 } );
@@ -54,4 +68,8 @@ function sendGreeting(msg, sayHello = true) {
             ]
         }
     });
+}
+
+function sendPictureByName(chatId, picName) {
+    const srcs = PicSrcs[picName];
 }
