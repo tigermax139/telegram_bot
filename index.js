@@ -1,6 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const TOKEN = '508235796:AAEGb0P1Y0NpegyfM6OfkQE07s8_QCmRus8';
 const fs = require('fs');
+const request = require('request');
 const  _ = require('lodash');
 
 const bot = new TelegramBot(TOKEN, {
@@ -55,6 +56,28 @@ bot.on('message', msg => {
 
 bot.on('callback_query', query => {
     console.log(JSON.stringify(query, null, 3));
+    const base = query.data;
+    const symbol = 'RUB';
+
+    bot.answerCallbackQuery({
+        callback_query_id: query.id,
+        text: `You change: ${base}`
+    });
+
+    request(`https://api.fixer.io/latest?symbols=${symbol}&base=${base}`, (error, response, body) => {
+        if(error) throw new Error(error)
+
+        if(response.statusCode === 200) {
+            const currencyData = JSON.parse(body);
+            const html = `<b>1 ${base}</b> - <em>${currencyData.rates[symbol]} ${symbol}</em>`
+
+            bot.sendMessage(query.message.chat.id, html, {
+                parse_mode: 'HTML'
+            } );
+        }
+
+
+    });
 });
 
 function sendPictureScreen(chatId) {
