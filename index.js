@@ -70,6 +70,10 @@ bot.on('callback_query', query => {
         text: `You change: ${base}`
     });
 
+    if(base == 'tomorrow'){
+        sendTableScreen(query.message.chat.id , query.message.date, true);
+    }
+
     request(`https://api.fixer.io/latest?symbols=${symbol}&base=${base}`, (error, response, body) => {
         if(error) throw new Error(error)
 
@@ -81,8 +85,6 @@ bot.on('callback_query', query => {
                 parse_mode: 'HTML'
             } );
         }
-
-
     });
 });
 
@@ -147,8 +149,13 @@ function sendCurrencyScreen(chatId, ) {
 }
 
 /****teamTable****/
-function sendTableScreen(chatId, date) {
-    timeConverter(date, chatId);
+function sendTableScreen(chatId, date, tomorrow) {
+    if(tomorrow) {
+        timeConverterTomorrow(date, chatId);
+    }else {
+        timeConverter(date, chatId);
+    }
+
    // bot.sendMessage(chatId, `test ${time}`);
 }
 function timeConverter(UNIX_timestamp, chatId) {
@@ -162,13 +169,42 @@ function timeConverter(UNIX_timestamp, chatId) {
     const sec = a.getSeconds();
     const time = date + '-' + month + '-' + year;
 
-    bot.sendMessage(chatId, `test ${time}`);
+    bot.sendMessage(chatId, `Today is ${time}`);
 
     fs.readFile(`${__dirname}/img/table/${time}.png`, (error, picture) => {
         if (error) throw new Error(error);
 
-        bot.sendPhoto(chatId, picture).then( () => {
-            bot.sendMessage(chatId, `Completed! :)`);
+        bot.sendPhoto(chatId, picture).then( ()=>{
+            bot.sendMessage(chatId, `Щоб переглянути пари на завтра, натисніть кнопку` , {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{
+                            text: `Пари на завтра`,
+                            callback_data: `tomorrow`
+                        }]
+                    ]
+                }
+            });
         });
+    });
+
+}
+function timeConverterTomorrow(UNIX_timestamp, chatId) {
+    const a = new Date(UNIX_timestamp * 1000);
+    const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    const year = a.getFullYear();
+    const month = months[a.getMonth()];
+    /*current*/
+    const date = a.getDate() + 1;
+    const hour = a.getHours();
+    const min = a.getMinutes();
+    const sec = a.getSeconds();
+    const time = date + '-' + month + '-' + year;
+
+    bot.sendMessage(chatId, `Tomorrow will be ${time}`);
+
+    fs.readFile(`${__dirname}/img/table/${time}.png`, (error, picture) => {
+        if (error) throw new Error(error);
+        bot.sendPhoto(chatId, picture);
     })
 }
