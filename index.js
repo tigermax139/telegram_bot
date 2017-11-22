@@ -29,7 +29,7 @@ const PicSrcs = {
         'car3.jpg',
         'car4.jpg'
     ]
-}
+};
 
 bot.onText(/\/start/, msg => {
     sendGreeting(msg);
@@ -41,6 +41,7 @@ bot.on('message', msg => {
             sendPictureScreen(msg.chat.id);
             break;
         case KB.currency:
+            sendCurrencyScreen(msg.chat.id);
             break;
         case KB.back:
             sendGreeting(msg, false);
@@ -51,6 +52,10 @@ bot.on('message', msg => {
             break;
     }
 } );
+
+bot.on('callback_query', query => {
+    console.log(JSON.stringify(query, null, 3));
+});
 
 function sendPictureScreen(chatId) {
     bot.sendMessage(chatId, 'Check the type of picture', {
@@ -89,5 +94,24 @@ function sendPictureByName(chatId, picName) {
         bot.sendPhoto(chatId, picture).then( () => {
             bot.sendMessage(chatId, `Completed! :)`);
         });
+    })
+}
+
+function sendCurrencyScreen(chatId, ) {
+    bot.sendMessage(chatId, `Change a type of current:`, {
+        reply_markup: {
+            inline_keyboard: [
+                [{
+                    text: `Dollar`,
+                    callback_data: `USD`
+                }],
+                [{
+                    text: `Euro`,
+                    callback_data: `EUR`
+                }]
+
+            ]
+
+        }
     })
 }
